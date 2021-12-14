@@ -28,6 +28,10 @@ window.setLogging = (config) => {
   logFrequency = frequency;
   logCustom = customLog;
   resetLog();
+
+  if (!checkIsInViewport()) {
+    clearLog();
+  }
 };
 
 /**
@@ -82,6 +86,33 @@ const onWindowFocus = () => {
   resetLog();
 };
 
+const checkIsInViewport = () => {
+  const clientHeight = document.documentElement.clientHeight;
+  const clientWidth = document.documentElement.clientWidth;
+  const elementCoordinates = adElement.getBoundingClientRect();
+  
+  if (
+    elementCoordinates.top < 0 
+    || elementCoordinates.left < 0
+    || (clientWidth - elementCoordinates.right) < 0
+    || (clientHeight - elementCoordinates.bottom) < 0
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+const onScroll = () => {
+  if (!checkIsInViewport()) {
+    clearLog();
+    return;
+  }
+
+  resetLog();
+};
+
 document.addEventListener('visibilitychange', onVisibilityChange);
 window.addEventListener('blur', onWindowBlur);
 window.addEventListener('focus', onWindowFocus);
+window.addEventListener('scroll', onScroll);
