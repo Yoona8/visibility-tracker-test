@@ -24,14 +24,10 @@
 </body>
 <script src="script.js"></script>
 <script>
-  function printStatus () {
-    if (typeof window.log === "function") {
-      window.log()
-    }
-
-    setTimeout(printStatus, 500);
+  if (typeof window.setLogging === "function") {
+    window.setLogging({
+      frequency: 500
+    });
   }
-
-  printStatus();
 </script>
 </html>
