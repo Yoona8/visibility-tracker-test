@@ -22,7 +22,7 @@ const adElement = document.getElementById("ad");
  * @param {number} config.frequency Logging frequency (in ms)
  * @param {ILog} config.customLog Custom logging function
  */
-window.setLogging = function (config) {
+window.setLogging = (config) => {
   const {frequency = 500, customLog} = config;
 
   logFrequency = frequency;
@@ -31,11 +31,10 @@ window.setLogging = function (config) {
 };
 
 /**
-* Logs the viewability values in the console
-*
-* @override
+* Logs the viewability values to the console
+* if the custom logger is not specified
 */
-const log = function () {
+const log = () => {
   if (logCustom) {
     logCustom(adIsViewable, Math.ceil(viewabilityTime));
     return;
@@ -44,11 +43,35 @@ const log = function () {
   console.log("Ad is viewable: ", adIsViewable, "\nViewability time of the ad in sec:", Math.ceil(viewabilityTime));
 };
 
-const resetLog = function () {
+const resetLog = () => {
   adIsViewable = true;
 
-  logInterval = setInterval(function () {
-    viewabilityTime += logFrequency / MS_IN_SEC;
+  if (logInterval) {
+    return;
+  }
+
+  logInterval = setInterval(() => {
+    if (adIsViewable) {
+      viewabilityTime += logFrequency / MS_IN_SEC;
+    }
+
     log();
   }, logFrequency);
 };
+
+const clearLog = () => {
+  // maybe clear the interval
+  adIsViewable = false;
+  viewabilityTime = 0;
+};
+
+const onVisibilityChange = () => {
+  if (document.hidden) {
+    clearLog();
+    return;
+  }
+
+  resetLog();
+};
+
+document.addEventListener('visibilitychange', onVisibilityChange);
