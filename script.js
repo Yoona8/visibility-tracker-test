@@ -74,4 +74,14 @@ const onVisibilityChange = () => {
   resetLog();
 };
 
+const onWindowBlur = () => {
+  clearLog();
+};
+
+const onWindowFocus = () => {
+  resetLog();
+};
+
 document.addEventListener('visibilitychange', onVisibilityChange);
+window.addEventListener('blur', onWindowBlur);
+window.addEventListener('focus', onWindowFocus);
